@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj Blachę</title>
+    <style>
+        label { display: block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Edytuj Blachę</h1>
+    <form method="POST">
+        <label for="nazwa">Nazwa:</label>
+        <input type="text" id="nazwa" name="nazwa" value="{{ blacha.nazwa }}" required>
+
+        <label for="nazwa_prosta">Prosta nazwa (np. kątownik):</label>
+        <input type="text" id="nazwa_prosta" name="nazwa_prosta" value="{{ blacha.nazwa_prosta }}">
+
+        <label for="kod">Kod:</label>
+        <input type="text" id="kod" name="kod" value="{{ blacha.kod }}" required>
+
+        <label for="stan_obecny">Stan obecny:</label>
+        <input type="number" id="stan_obecny" name="stan_obecny" value="{{ blacha.stan_obecny }}" required>
+
+        <label for="material">Materiał:</label>
+        <select id="material" name="material_id" required>
+            {% for m in materials %}
+            <option value="{{ m.id }}" {% if blacha.material_id == m.id %}selected{% endif %}>
+                {{ m.nazwa }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="grubosc">Grubość:</label>
+        <select id="grubosc" name="thickness_id" required>
+            {% for t in thicknesses %}
+            <option value="{{ t.id }}" {% if blacha.thickness_id == t.id %}selected{% endif %}>
+                {{ t.wartosc }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="rodzaj_obrobki">Rodzaj obróbki:</label>
+        <select id="rodzaj_obrobki" name="rodzaj_obrobki" required>
+            <option value="Palenie" {% if blacha.rodzaj_obrobki == "Palenie" %}selected{% endif %}>Palenie</option>
+            <option value="Gięcie CNC" {% if blacha.rodzaj_obrobki == "Gięcie CNC" %}selected{% endif %}>Gięcie CNC</option>
+            <option value="Gięcie + Palenie" {% if blacha.rodzaj_obrobki == "Gięcie + Palenie" %}selected{% endif %}>Gięcie + Palenie</option>
+        </select>
+
+        <br><br>
+        <input type="submit" value="Zapisz zmiany">
+    </form>
+    <br>
+    <!-- Formularz usuwający wpis -->
+    <form action="{{ url_for('usun_blacha', blacha_id=blacha.id) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę blachę?');">
+        <input type="submit" value="Usuń tę blachę">
+    </form>
+    <br>
+    <a href="{{ url_for('index') }}">Powrót do listy blach</a>
+</body>
+</html>

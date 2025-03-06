@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Materiały i Grubości</title>
+</head>
+<body>
+    <h1>Materiały</h1>
+    <ul>
+        {% for m in materials %}
+        <li>{{ m.nazwa }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('dodaj_material') }}">Dodaj nowy materiał</a>
+    <hr>
+    <h1>Grubości</h1>
+    <ul>
+        {% for t in thicknesses %}
+        <li>{{ t.wartosc }}</li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('dodaj_thickness') }}">Dodaj nową grubość</a>
+    <br><br>
+    <a href="{{ url_for('index') }}">Powrót do listy blach</a>
+</body>
+</html>

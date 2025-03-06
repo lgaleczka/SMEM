@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Projekty</title>
+</head>
+<body>
+    <h1>Lista Projektów</h1>
+    <a href="{{ url_for('dodaj_projekt') }}">Dodaj nowy projekt</a>
+    <ul>
+        {% for projekt in projekty %}
+            <li>
+                <a href="{{ url_for('projekt_szczegoly', projekt_id=projekt.id) }}">{{ projekt.nazwa }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{{ url_for('index') }}">Powrót do głównej listy blach</a>
+</body>
+</html>

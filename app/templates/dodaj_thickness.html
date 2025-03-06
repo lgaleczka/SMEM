@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Grubość</title>
+</head>
+<body>
+    <h1>Dodaj nową grubość</h1>
+    <form method="POST">
+        <label for="wartosc">Wartość grubości:</label>
+        <input type="text" id="wartosc" name="wartosc" required>
+        <br><br>
+        <input type="submit" value="Dodaj grubość">
+    </form>
+    <br>
+    <a href="{{ url_for('materialy') }}">Powrót do materiałów</a>
+</body>
+</html>

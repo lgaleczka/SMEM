@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ projekt.nazwa }}</title>
+    <style>
+        table { border-collapse: collapse; }
+        th, td { padding: 5px; border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>{{ projekt.nazwa }}</h1>
+    <h2>Wpisy w projekcie:</h2>
+    <table>
+        <tr>
+            <th>lp.</th>
+            <th>KOD</th>
+            <th>Materiał</th>
+            <th>Grubość</th>
+            <th>Ilość wymaganych</th>
+            <th>Stan magazynowy</th>
+            <th>Akcje</th>
+        </tr>
+        {% for item in projekt.items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.blacha.kod }}</td>
+            <td>{{ item.blacha.material }}</td>
+            <td>{{ item.blacha.grubosc }}</td>
+            <td>{{ item.ilosc }} szt.</td>
+            <td>{{ item.blacha.stan_obecny }} szt.</td>
+            <td>
+                <a href="{{ url_for('edit_project_item', item_id=item.id) }}">Edytuj</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Dodaj wpis do projektu:</h2>
+    <form method="POST">
+        <label for="blacha_id">Wybierz blachę:</label>
+        <select id="blacha_id" name="blacha_id" required>
+            {% for blacha in blachy %}
+            <option value="{{ blacha.id }}">
+                {{ blacha.kod }} - {{ blacha.material }} - {{ blacha.grubosc }}
+            </option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="ilosc">Ilość wymaganych sztuk:</label>
+        <input type="number" id="ilosc" name="ilosc" min="1" required>
+        <br><br>
+        <input type="submit" value="Dodaj wpis">
+    </form>
+    <br>
+    <a href="{{ url_for('projekty') }}">Powrót do listy projektów</a>
+</body>
+</html>

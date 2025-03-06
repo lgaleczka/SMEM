@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload plików dla {{ blacha.nazwa }}</title>
+</head>
+<body>
+    <h1>Upload plików dla {{ blacha.nazwa }}</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label for="pdf">Plik PDF:</label>
+        <input type="file" name="pdf" id="pdf" accept=".pdf"><br><br>
+        <label for="dxf">Plik DXF:</label>
+        <input type="file" name="dxf" id="dxf" accept=".dxf"><br><br>
+        <input type="submit" value="Wyślij">
+    </form>
+    <a href="{{ url_for('index') }}">Powrót</a>
+</body>
+</html>

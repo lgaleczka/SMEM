@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Projekt</title>
+</head>
+<body>
+    <h1>Dodaj Nowy Projekt</h1>
+    <form method="POST">
+        <label for="nazwa">Nazwa projektu:</label>
+        <input type="text" id="nazwa" name="nazwa" required>
+        <br><br>
+        <input type="submit" value="Dodaj Projekt">
+    </form>
+    <a href="{{ url_for('projekty') }}">Powrót do listy projektów</a>
+</body>
+</html>

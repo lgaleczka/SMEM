@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Blach</title>
+    <style>
+        table { border-collapse: collapse; }
+        th, td { padding: 5px; border: 1px solid #ccc; }
+        .red { color: red; }
+        .green { color: green; }
+        nav a { margin-right: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{{ url_for('index') }}">Blachy</a>
+        <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
+        <a href="{{ url_for('projekty') }}">Projekty</a>
+    </nav>
+    <h1>Lista Blach</h1>
+    <a href="{{ url_for('dodaj') }}">Dodaj nową blachę</a>
+    <br><br>
+    <table>
+        <tr>
+            <th>lp.</th>
+            <th>KOD</th>
+            <th>Prosta nazwa</th>
+            <th>Materiał</th>
+            <th>Grubość</th>
+            <th>Rodzaj obróbki</th>
+            <th>Stan Obecny</th>
+            <th>Stan Potrzebny</th>
+            <th>Upload</th>
+            <th>Edytuj</th>
+            <th>Zarezerwuj w ofercie</th>
+        </tr>
+        {% for blacha in blachy %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ blacha.kod }}</td>
+            <td>{{ blacha.nazwa_prosta or '-' }}</td>
+            <td>{{ blacha.material or '-' }}</td>
+            <td>{{ blacha.grubosc or '-' }}</td>
+            <td>{{ blacha.rodzaj_obrobki or '-' }}</td>
+            <td class="{% if blacha.stan_obecny < blacha.stan_potrzebny %}red{% else %}green{% endif %}">
+                {{ blacha.stan_obecny }} szt.
+            </td>
+            <td>{{ blacha.stan_potrzebny }} szt.</td>
+            <td>
+                <a href="{{ url_for('upload_file', blacha_id=blacha.id) }}">Upload</a>
+            </td>
+            <td>
+                <a href="{{ url_for('edytuj_blacha', blacha_id=blacha.id) }}">Edytuj</a>
+            </td>
+            <td>
+                <input type="checkbox" name="override" value="{{ blacha.id }}">
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <!-- Formularz do generowania oferty, np. -->
+    <form action="{{ url_for('generate_txt') }}" method="post">
+        <input type="submit" value="Generuj ofertę na braki">
+    </form>
+</body>
+</html>

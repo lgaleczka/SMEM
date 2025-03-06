@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj Materiał</title>
+</head>
+<body>
+    <h1>Dodaj nowy materiał</h1>
+    <form method="POST">
+        <label for="nazwa">Nazwa materiału:</label>
+        <input type="text" id="nazwa" name="nazwa" required>
+        <br><br>
+        <input type="submit" value="Dodaj materiał">
+    </form>
+    <br>
+    <a href="{{ url_for('materialy') }}">Powrót do materiałów</a>
+</body>
+</html>

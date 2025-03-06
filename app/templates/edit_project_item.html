@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj wpis projektu</title>
+    <style>
+        label { display: block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Edytuj wpis projektu</h1>
+    <form method="POST">
+        <label for="blacha_id">Wybierz blachę:</label>
+        <select id="blacha_id" name="blacha_id" required>
+            {% for b in blachy %}
+            <option value="{{ b.id }}" {% if b.id == item.blacha_id %}selected{% endif %}>
+                {{ b.kod }} - {{ b.nazwa }} - {{ b.material }} - {{ b.grubosc }}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label for="ilosc">Ilość potrzebnych sztuk:</label>
+        <input type="number" id="ilosc" name="ilosc" value="{{ item.ilosc }}" min="1" required>
+
+        <br><br>
+        <input type="submit" value="Zapisz zmiany">
+    </form>
+    <br>
+    <a href="{{ url_for('projekt_szczegoly', projekt_id=item.project_id) }}">Powrót do szczegółów projektu</a>
+</body>
+</html>
