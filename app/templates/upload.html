@@ -2,17 +2,25 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Upload plików dla {{ blacha.nazwa }}</title>
+    <title>Dodaj pliki do {{ blacha.nazwa }}</title>
 </head>
 <body>
-    <h1>Upload plików dla {{ blacha.nazwa }}</h1>
-    <form method="post" enctype="multipart/form-data">
-        <label for="pdf">Plik PDF:</label>
-        <input type="file" name="pdf" id="pdf" accept=".pdf"><br><br>
-        <label for="dxf">Plik DXF:</label>
-        <input type="file" name="dxf" id="dxf" accept=".dxf"><br><br>
-        <input type="submit" value="Wyślij">
+    <h1>Dodaj pliki do {{ blacha.nazwa }}</h1>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="pdf">PDF File:</label>
+        <input type="file" id="pdf" name="pdf" accept=".pdf"><br><br>
+
+        <label for="dxf">DXF File:</label>
+        <input type="file" id="dxf" name="dxf" accept=".dxf"><br><br>
+
+        <label for="image">Image File:</label>
+        <input type="file" id="image" name="image" accept="image/*"><br><br>
+
+        <input type="submit" value="Upload">
     </form>
-    <a href="{{ url_for('index') }}">Powrót</a>
+    <br>
+    <form action="{{ url_for('index') }}" method="get" style="display:inline;">
+        <button type="submit">Powrót do listy Blach</button>
+    </form>
 </body>
 </html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Podsumowanie Zamówienia</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
+        .preview { display: none; margin-top: 10px; max-width: 300px; }
+    </style>
+</head>
+<body>
+    <h1>Podsumowanie Zamówienia</h1>
+    {% if order_items %}
+    <table>
+        <tr>
+            <th>lp.</th>
+            <th>KOD</th>
+            <th>Materiał</th>
+            <th>Grubość</th>
+            <th>Ilość do zamówienia (szt.)</th>
+            <th>PDF</th>
+            <th>Zdjęcie</th>
+        </tr>
+        {% for item in order_items %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.sheet.kod }}</td>
+            <td>{{ item.sheet.material or '-' }}</td>
+            <td>{{ item.sheet.grubosc or '-' }}</td>
+            <td>{{ item.qty }} szt.</td>
+            <td>
+                {% if item.sheet.pdf_filename %}
+                    <a href="{{ url_for('uploaded_file', filename=item.sheet.pdf_filename) }}" target="_blank">PDF</a>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+            <td>
+                {% if item.sheet.image_filename %}
+                    <img src="{{ url_for('uploaded_file', filename=item.sheet.image_filename) }}" alt="zdjęcie" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
+                    <div class="preview"></div>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <form action="{{ url_for('confirm_order') }}" method="post">
+        {% for item in order_items %}
+            <input type="hidden" name="order_sheet_id" value="{{ item.sheet.id }}">
+            <input type="hidden" name="order_qty_{{ item.sheet.id }}" value="{{ item.qty }}">
+        {% endfor %}
+        <input type="submit" value="Potwierdź Zamówienie">
+    </form>
+    {% else %}
+    <p>Brak danych zamówienia. Wygeneruj ofertę najpierw.</p>
+    {% endif %}
+    <br>
+    <form action="{{ url_for('index') }}" method="get" style="display:inline;">
+        <button type="submit">Powrót do listy Blach</button>
+    </form>
+    <script>
+        function togglePreview(thumbnail) {
+            var previewDiv = thumbnail.nextElementSibling;
+            if (previewDiv.style.display === "none" || previewDiv.style.display === "") {
+                previewDiv.innerHTML = '<img src="' + thumbnail.src + '" style="max-width:300px;">';
+                previewDiv.style.display = "block";
+            } else {
+                previewDiv.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

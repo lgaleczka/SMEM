@@ -12,6 +12,9 @@
         <br><br>
         <input type="submit" value="Dodaj Projekt">
     </form>
-    <a href="{{ url_for('projekty') }}">Powrót do listy projektów</a>
+    <br>
+    <form action="{{ url_for('projekty') }}" method="get" style="display:inline;">
+        <button type="submit">Powrót do listy projektów</button>
+    </form>
 </body>
 </html>

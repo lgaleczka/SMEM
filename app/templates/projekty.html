@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <title>Projekty</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        form { display: inline; }
+        button { padding: 5px 10px; margin: 5px; }
+    </style>
 </head>
 <body>
     <h1>Lista Projektów</h1>
-    <a href="{{ url_for('dodaj_projekt') }}">Dodaj nowy projekt</a>
+    <form action="{{ url_for('dodaj_projekt') }}" method="get">
+        <button type="submit">Dodaj nowy projekt</button>
+    </form>
     <ul>
         {% for projekt in projekty %}
             <li>
-                <a href="{{ url_for('projekt_szczegoly', projekt_id=projekt.id) }}">{{ projekt.nazwa }}</a>
+                <form action="{{ url_for('projekt_szczegoly', projekt_id=projekt.id) }}" method="get">
+                    <button type="submit">{{ projekt.nazwa }}</button>
+                </form>
             </li>
         {% endfor %}
     </ul>
-    <a href="{{ url_for('index') }}">Powrót do głównej listy blach</a>
+    <form action="{{ url_for('index') }}" method="get">
+        <button type="submit">Powrót do głównej listy blach</button>
+    </form>
 </body>
 </html>

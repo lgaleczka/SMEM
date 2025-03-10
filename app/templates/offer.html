@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Offer on Shortages</title>
+</head>
+<body>
+  <h1>Offer on Shortages</h1>
+  <table border="1" cellpadding="5">
+    <tr>
+      <th>lp.</th>
+      <th>KOD</th>
+      <th>Materiał</th>
+      <th>Grubość</th>
+      <th>Brak (szt.)</th>
+    </tr>
+    {% for sheet in offer_items %}
+    <tr>
+      <td>{{ loop.index }}</td>
+      <td>{{ sheet.kod }}</td>
+      <td>{{ sheet.material or '-' }}</td>
+      <td>{{ sheet.grubosc or '-' }}</td>
+      <td>
+        {% if sheet.id in override_ids %}
+          X szt.
+        {% else %}
+          {{ sheet.stan_potrzebny - sheet.stan_obecny }} szt.
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <br>
+  <form action="{{ url_for('orders') }}" method="post">
+    <!-- Pass the offer items IDs, for example as hidden inputs -->
+    {% for sheet in offer_items %}
+      <input type="hidden" name="sheet_ids" value="{{ sheet.id }}">
+    {% endfor %}
+    <input type="submit" value="Proceed to Order">
+  </form>
+  <br>
+  <a href="{{ url_for('index') }}">Back to Sheets</a>
+</body>
+</html>

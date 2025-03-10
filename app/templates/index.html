@@ -4,22 +4,36 @@
     <meta charset="UTF-8">
     <title>Lista Blach</title>
     <style>
-        table { border-collapse: collapse; }
-        th, td { padding: 5px; border: 1px solid #ccc; }
+        body { font-family: Arial, sans-serif; }
+        nav {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+        }
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #333;
+        }
+        nav a:hover { text-decoration: underline; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
         .red { color: red; }
         .green { color: green; }
-        nav a { margin-right: 15px; font-weight: bold; }
+        .preview { display: none; margin-top: 10px; max-width: 300px; }
     </style>
 </head>
 <body>
     <nav>
         <a href="{{ url_for('index') }}">Blachy</a>
-        <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
+        <a href="{{ url_for('dodaj') }}">Dodaj Blachę</a>
         <a href="{{ url_for('projekty') }}">Projekty</a>
+        <a href="{{ url_for('orders') }}">Zamówienia</a>
+        <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
     </nav>
     <h1>Lista Blach</h1>
-    <a href="{{ url_for('dodaj') }}">Dodaj nową blachę</a>
-    <br><br>
+    <form action="{{ url_for('offer_override') }}" method="post">
     <table>
         <tr>
             <th>lp.</th>
@@ -30,9 +44,10 @@
             <th>Rodzaj obróbki</th>
             <th>Stan Obecny</th>
             <th>Stan Potrzebny</th>
+            <th>Zdjęcie</th>
             <th>Upload</th>
             <th>Edytuj</th>
-            <th>Zarezerwuj w ofercie</th>
+            <th>Zarezerwuj</th>
         </tr>
         {% for blacha in blachy %}
         <tr>
@@ -47,11 +62,15 @@
             </td>
             <td>{{ blacha.stan_potrzebny }} szt.</td>
             <td>
-                <a href="{{ url_for('upload_file', blacha_id=blacha.id) }}">Upload</a>
+                {% if blacha.image_filename %}
+                    <img src="{{ url_for('uploaded_file', filename=blacha.image_filename) }}" alt="thumbnail" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
+                    <div class="preview"></div>
+                {% else %}
+                    -
+                {% endif %}
             </td>
-            <td>
-                <a href="{{ url_for('edytuj_blacha', blacha_id=blacha.id) }}">Edytuj</a>
-            </td>
+            <td><a href="{{ url_for('upload_file', blacha_id=blacha.id) }}">Upload</a></td>
+            <td><a href="{{ url_for('edytuj_blacha', blacha_id=blacha.id) }}">Edytuj</a></td>
             <td>
                 <input type="checkbox" name="override" value="{{ blacha.id }}">
             </td>
@@ -59,9 +78,18 @@
         {% endfor %}
     </table>
     <br>
-    <!-- Formularz do generowania oferty, np. -->
-    <form action="{{ url_for('generate_txt') }}" method="post">
-        <input type="submit" value="Generuj ofertę na braki">
+    <input type="submit" value="Przejdź do zamówienia">
     </form>
+    <script>
+        function togglePreview(thumbnail) {
+            var previewDiv = thumbnail.nextElementSibling;
+            if (previewDiv.style.display === "none" || previewDiv.style.display === "") {
+                previewDiv.innerHTML = '<img src="' + thumbnail.src + '" style="max-width:300px;">';
+                previewDiv.style.display = "block";
+            } else {
+                previewDiv.style.display = "none";
+            }
+        }
+    </script>
 </body>
 </html>

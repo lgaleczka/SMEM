@@ -13,6 +13,8 @@
         <input type="submit" value="Dodaj materiał">
     </form>
     <br>
-    <a href="{{ url_for('materialy') }}">Powrót do materiałów</a>
+    <form action="{{ url_for('materialy') }}" method="get" style="display:inline;">
+        <button type="submit">Powrót do materiałów</button>
+    </form>
 </body>
 </html>
