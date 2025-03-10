@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Podsumowanie Zamówienia</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+        .red { color: red; }
+        .inline { display: inline; }
+    </style>
+</head>
+<body>
+    <h1>Podsumowanie Zamówienia</h1>
+    <form action="{{ url_for('confirm_order') }}" method="post">
+      <table>
+        <thead>
+          <tr>
+            <th>lp.</th>
+            <th>KOD</th>
+            <th>Stan Obecny</th>
+            <th>Stan Wymagany</th>
+            <th>Ilość do zamówienia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order_items %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ item.sheet.kod }}</td>
+            <td class="red">{{ item.sheet.stan_obecny }} szt.</td>
+            <td class="red">{{ item.sheet.stan_potrzebny }} szt.</td>
+            <td>
+              <input type="number" name="order_qty_{{ item.sheet.id }}" value="{{ item.qty }}" min="0">
+              <input type="hidden" name="order_sheet_id" value="{{ item.sheet.id }}">
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <br>
+      <input type="submit" value="Potwierdź Zamówienie">
+    </form>
+    <br>
+    <form action="{{ url_for('index') }}" method="get" class="inline">
+        <button type="submit">Powrót do listy blach</button>
+    </form>
+</body>
+</html>

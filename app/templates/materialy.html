@@ -3,7 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <title>Materiały i Grubości</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    nav {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+    }
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+    nav a:hover { text-decoration: underline; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
+    .red { color: red; }
+    .green { color: green; }
+    .preview { display: none; margin-top: 10px; max-width: 300px; }
+    form.inline { display: inline; }
+  </style>
 </head>
+<body>
+  <nav>
+      <a href="{{ url_for('index') }}">Blachy</a>
+      <a href="{{ url_for('dodaj') }}">Dodaj Blachę</a>
+      <a href="{{ url_for('projekty') }}">Projekty</a>
+      <a href="{{ url_for('orders_list') }}">Zamówienia</a>
+      <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
+  </nav>
 <body>
     <h1>Materiały</h1>
     <ul>

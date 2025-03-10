@@ -3,24 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Dodaj pliki do {{ blacha.nazwa }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        form { margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; }
+    </style>
 </head>
 <body>
     <h1>Dodaj pliki do {{ blacha.nazwa }}</h1>
     <form method="POST" enctype="multipart/form-data">
-        <label for="pdf">PDF File:</label>
-        <input type="file" id="pdf" name="pdf" accept=".pdf"><br><br>
+        <label for="pdf">Plik PDF:</label>
+        <input type="file" id="pdf" name="pdf" accept=".pdf">
 
-        <label for="dxf">DXF File:</label>
-        <input type="file" id="dxf" name="dxf" accept=".dxf"><br><br>
+        <label for="dxf">Plik DXF:</label>
+        <input type="file" id="dxf" name="dxf" accept=".dxf">
 
-        <label for="image">Image File:</label>
-        <input type="file" id="image" name="image" accept="image/*"><br><br>
+        <label for="image">Plik obrazu:</label>
+        <input type="file" id="image" name="image" accept="image/*">
 
-        <input type="submit" value="Upload">
+        <br><br>
+        <input type="submit" value="Wyślij">
     </form>
-    <br>
+
     <form action="{{ url_for('index') }}" method="get" style="display:inline;">
-        <button type="submit">Powrót do listy Blach</button>
+        <button type="submit">Powrót do listy blach</button>
     </form>
 </body>
 </html>

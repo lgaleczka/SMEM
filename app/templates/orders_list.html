@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Historia Zamówień</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    nav {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+    }
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+    nav a:hover { text-decoration: underline; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
+    .red { color: red; }
+    .green { color: green; }
+    .preview { display: none; margin-top: 10px; max-width: 300px; }
+    button { padding: 5px 10px; }
+  </style>
+</head>
+<body>
+  <nav>
+      <a href="{{ url_for('index') }}">Blachy</a>
+      <a href="{{ url_for('dodaj') }}">Dodaj Blachę</a>
+      <a href="{{ url_for('projekty') }}">Projekty</a>
+      <a href="{{ url_for('orders_list') }}">Zamówienia</a>
+      <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
+  </nav>
+   <h1>Historia Zamówień</h1>
+    {% if orders %}
+    <table>
+        <thead>
+            <tr>
+                <th>lp.</th>
+                <th>Numer Zamówienia</th>
+                <th>Data złożenia</th>
+                <th>Ilość pozycji</th>
+                <th>Szczegóły</th>
+                <th>Eksport</th>
+                <th>Usuń zamówienie</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ order.id }}</td>
+                <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td>{{ order.items|length }}</td>
+                <td><a href="{{ url_for('order_details', order_id=order.id) }}">Szczegóły</a></td>
+                <td>
+                    <form class="inline" action="{{ url_for('export_order', order_id=order.id) }}" method="get">
+                        <button type="submit">Eksportuj Zamówienie</button>
+                    </form>
+                </td>
+                <td>
+                    <form class="inline" action="{{ url_for('delete_order', order_id=order.id) }}" method="post" onsubmit="return confirm('Czy na pewno usunąć to zamówienie?');">
+                        <button type="submit">Usuń Zamówienie</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Brak złożonych zamówień.</p>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('index') }}">Powrót do listy blach</a>
+</body>
+</html>

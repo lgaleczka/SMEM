@@ -1,95 +1,123 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>Lista Blach</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        nav {
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #f0f0f0;
-        }
-        nav a {
-            margin-right: 15px;
-            text-decoration: none;
-            font-weight: bold;
-            color: #333;
-        }
-        nav a:hover { text-decoration: underline; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
-        .red { color: red; }
-        .green { color: green; }
-        .preview { display: none; margin-top: 10px; max-width: 300px; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Lista Blach</title>
+  <style>
+    body { font-family: Arial, sans-serif; }
+    nav {
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f0f0f0;
+    }
+    nav a {
+      margin-right: 15px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #333;
+    }
+    nav a:hover { text-decoration: underline; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
+    .red { color: red; }
+    .green { color: green; }
+    .preview { display: none; margin-top: 10px; max-width: 300px; }
+    button { padding: 5px 10px; }
+  </style>
 </head>
 <body>
-    <nav>
-        <a href="{{ url_for('index') }}">Blachy</a>
-        <a href="{{ url_for('dodaj') }}">Dodaj Blachę</a>
-        <a href="{{ url_for('projekty') }}">Projekty</a>
-        <a href="{{ url_for('orders') }}">Zamówienia</a>
-        <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
-    </nav>
-    <h1>Lista Blach</h1>
-    <form action="{{ url_for('offer_override') }}" method="post">
+  <nav>
+      <a href="{{ url_for('index') }}">Blachy</a>
+      <a href="{{ url_for('dodaj') }}">Dodaj Blachę</a>
+      <a href="{{ url_for('projekty') }}">Projekty</a>
+      <a href="{{ url_for('orders_list') }}">Zamówienia</a>
+      <a href="{{ url_for('materialy') }}">Materiały i Grubości</a>
+  </nav>
+  <h1>Lista Blach</h1>
+
+  <!-- Główny formularz dla checkboxów, wysyłający dane do endpointu /order_form -->
+  <form action="{{ url_for('order_form') }}" method="post">
     <table>
+      <thead>
         <tr>
-            <th>lp.</th>
-            <th>KOD</th>
-            <th>Prosta nazwa</th>
-            <th>Materiał</th>
-            <th>Grubość</th>
-            <th>Rodzaj obróbki</th>
-            <th>Stan Obecny</th>
-            <th>Stan Potrzebny</th>
-            <th>Zdjęcie</th>
-            <th>Upload</th>
-            <th>Edytuj</th>
-            <th>Zarezerwuj</th>
+          <th>lp.</th>
+          <th>KOD</th>
+          <th>Prosta nazwa</th>
+          <th>Materiał</th>
+          <th>Grubość</th>
+          <th>Rodzaj obróbki</th>
+          <th>Stan Obecny</th>
+          <th>Stan Potrzebny</th>
+          <th>Zdjęcie</th>
+          <th>PDF</th>
+          <th>Upload</th>
+          <th>Edytuj</th>
+          <th>Zarezerwuj</th>
         </tr>
+      </thead>
+      <tbody>
         {% for blacha in blachy %}
         <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ blacha.kod }}</td>
-            <td>{{ blacha.nazwa_prosta or '-' }}</td>
-            <td>{{ blacha.material or '-' }}</td>
-            <td>{{ blacha.grubosc or '-' }}</td>
-            <td>{{ blacha.rodzaj_obrobki or '-' }}</td>
-            <td class="{% if blacha.stan_obecny < blacha.stan_potrzebny %}red{% else %}green{% endif %}">
-                {{ blacha.stan_obecny }} szt.
-            </td>
-            <td>{{ blacha.stan_potrzebny }} szt.</td>
-            <td>
-                {% if blacha.image_filename %}
-                    <img src="{{ url_for('uploaded_file', filename=blacha.image_filename) }}" alt="thumbnail" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
-                    <div class="preview"></div>
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-            <td><a href="{{ url_for('upload_file', blacha_id=blacha.id) }}">Upload</a></td>
-            <td><a href="{{ url_for('edytuj_blacha', blacha_id=blacha.id) }}">Edytuj</a></td>
-            <td>
-                <input type="checkbox" name="override" value="{{ blacha.id }}">
-            </td>
+          <td>{{ loop.index }}</td>
+          <td>{{ blacha.kod }}</td>
+          <td>{{ blacha.nazwa_prosta or '-' }}</td>
+          <td>{{ blacha.material or '-' }}</td>
+          <td>{{ blacha.grubosc or '-' }}</td>
+          <td>{{ blacha.rodzaj_obrobki or '-' }}</td>
+          <td class="{% if blacha.stan_obecny < blacha.stan_potrzebny %}red{% else %}green{% endif %}">
+              {{ blacha.stan_obecny if blacha.stan_obecny is not none else 0 }} szt.
+          </td>
+          <td>{{ blacha.stan_potrzebny }} szt.</td>
+          <td>
+            {% if blacha.image_filename %}
+              <img src="{{ url_for('uploaded_file', filename=blacha.image_filename) }}" alt="zdjęcie" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
+              <div class="preview"></div>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            {% if blacha.pdf_filename %}
+              <a href="{{ url_for('uploaded_file', filename=blacha.pdf_filename) }}" target="_blank">
+                <button type="button">Podgląd PDF</button>
+              </a>
+            {% else %}
+              -
+            {% endif %}
+          </td>
+          <td>
+            <a href="{{ url_for('upload_file', blacha_id=blacha.id) }}" target="_blank">
+              <button type="button">Upload</button>
+            </a>
+          </td>
+          <td>
+            <a href="{{ url_for('edytuj_blacha', blacha_id=blacha.id) }}">
+              <button type="button">Edytuj</button>
+            </a>
+          </td>
+          <td>
+            <!-- Checkbox: automatycznie zaznaczony, jeśli blacha jest poniżej stanu wymaganych -->
+            <input type="checkbox" name="override" value="{{ blacha.id }}"
+              {% if blacha.stan_obecny < blacha.stan_potrzebny %}checked{% endif %}>
+          </td>
         </tr>
         {% endfor %}
+      </tbody>
     </table>
     <br>
     <input type="submit" value="Przejdź do zamówienia">
-    </form>
-    <script>
-        function togglePreview(thumbnail) {
-            var previewDiv = thumbnail.nextElementSibling;
-            if (previewDiv.style.display === "none" || previewDiv.style.display === "") {
-                previewDiv.innerHTML = '<img src="' + thumbnail.src + '" style="max-width:300px;">';
-                previewDiv.style.display = "block";
-            } else {
-                previewDiv.style.display = "none";
-            }
-        }
-    </script>
+  </form>
+
+  <script>
+    function togglePreview(thumbnail) {
+      var previewDiv = thumbnail.nextElementSibling;
+      if (previewDiv.style.display === "none" || previewDiv.style.display === "") {
+        previewDiv.innerHTML = '<img src="' + thumbnail.src + '" style="max-width:300px;">';
+        previewDiv.style.display = "block";
+      } else {
+        previewDiv.style.display = "none";
+      }
+    }
+  </script>
 </body>
 </html>

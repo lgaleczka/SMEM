@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły Zamówienia {{ order.id }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+        button { padding: 5px 10px; }
+        form.inline { display: inline; }
+    </style>
+</head>
+<body>
+    <h1>Szczegóły Zamówienia #{{ order.id }}</h1>
+    <p>Data złożenia: {{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+    {% if order.items %}
+    <table>
+        <thead>
+            <tr>
+                <th>lp.</th>
+                <th>KOD</th>
+                <th>Ilość</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.blacha.kod }}</td>
+                <td>{{ item.quantity }} szt.</td>
+                <td>
+                    <form class="inline" action="{{ url_for('delete_order_item', order_item_id=item.id) }}" method="post" onsubmit="return confirm('Czy na pewno usunąć tę pozycję?');">
+                        <button type="submit">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Brak pozycji w zamówieniu.</p>
+    {% endif %}
+    <br>
+    <a href="{{ url_for('orders_list') }}">Powrót do historii zamówień</a>
+</body>
+</html>

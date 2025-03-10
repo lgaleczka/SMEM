@@ -6,48 +6,66 @@
     <style>
         body { font-family: Arial, sans-serif; }
         table { border-collapse: collapse; width: 100%; }
-        th, td { padding: 5px; border: 1px solid #ccc; text-align: center; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: center; }
+        .red { color: red; }
+        form.inline { display: inline; }
         .preview { display: none; margin-top: 10px; max-width: 300px; }
     </style>
 </head>
 <body>
     <h1>Podsumowanie Zamówienia</h1>
     {% if order_items %}
-    <table>
-        <tr>
-            <th>lp.</th>
-            <th>KOD</th>
-            <th>Materiał</th>
-            <th>Grubość</th>
-            <th>Ilość do zamówienia (szt.)</th>
-            <th>PDF</th>
-            <th>Zdjęcie</th>
-        </tr>
-        {% for item in order_items %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ item.sheet.kod }}</td>
-            <td>{{ item.sheet.material or '-' }}</td>
-            <td>{{ item.sheet.grubosc or '-' }}</td>
-            <td>{{ item.qty }} szt.</td>
-            <td>
-                {% if item.sheet.pdf_filename %}
-                    <a href="{{ url_for('uploaded_file', filename=item.sheet.pdf_filename) }}" target="_blank">PDF</a>
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-            <td>
-                {% if item.sheet.image_filename %}
-                    <img src="{{ url_for('uploaded_file', filename=item.sheet.image_filename) }}" alt="zdjęcie" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
-                    <div class="preview"></div>
-                {% else %}
-                    -
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <form action="{{ url_for('orders') }}" method="post">
+      <table>
+          <thead>
+              <tr>
+                  <th>lp.</th>
+                  <th>KOD</th>
+                  <th>Stan Obecny</th>
+                  <th>Stan Wymagany</th>
+                  <th>Ilość do zamówienia</th>
+                  <th>Podgląd PDF</th>
+                  <th>Zdjęcie</th>
+                  <th>Akcje</th>
+              </tr>
+          </thead>
+          <tbody>
+              {% for item in order_items %}
+              <tr>
+                  <td>{{ loop.index }}</td>
+                  <td>{{ item.sheet.kod }}</td>
+                  <td class="red">{{ item.sheet.stan_obecny }} szt.</td>
+                  <td class="red">{{ item.sheet.stan_potrzebny }} szt.</td>
+                  <td>
+                      <input type="number" name="order_qty_{{ item.sheet.id }}" value="{{ item.qty }}" min="0">
+                  </td>
+                  <td>
+                      {% if item.sheet.pdf_filename %}
+                          <a href="{{ url_for('uploaded_file', filename=item.sheet.pdf_filename) }}" target="_blank">Podgląd PDF</a>
+                      {% else %}
+                          -
+                      {% endif %}
+                  </td>
+                  <td>
+                      {% if item.sheet.image_filename %}
+                          <img src="{{ url_for('uploaded_file', filename=item.sheet.image_filename) }}" alt="zdjęcie" width="50" style="cursor:pointer;" onclick="togglePreview(this)">
+                          <div class="preview"></div>
+                      {% else %}
+                          -
+                      {% endif %}
+                  </td>
+                  <td>
+                      <form class="inline" action="{{ url_for('delete_order_item', sheet_id=item.sheet.id) }}" method="post">
+                          <button type="submit">Usuń</button>
+                      </form>
+                  </td>
+              </tr>
+              {% endfor %}
+          </tbody>
+      </table>
+      <br>
+      <input type="submit" value="Zaktualizuj Zamówienie">
+    </form>
     <br>
     <form action="{{ url_for('confirm_order') }}" method="post">
         {% for item in order_items %}
@@ -60,8 +78,8 @@
     <p>Brak danych zamówienia. Wygeneruj ofertę najpierw.</p>
     {% endif %}
     <br>
-    <form action="{{ url_for('index') }}" method="get" style="display:inline;">
-        <button type="submit">Powrót do listy Blach</button>
+    <form action="{{ url_for('index') }}" method="get">
+        <button type="submit">Powrót do listy blach</button>
     </form>
     <script>
         function togglePreview(thumbnail) {

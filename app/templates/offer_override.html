@@ -10,7 +10,7 @@
 </head>
 <body>
     <h1>Ustal ilości dla zamówienia</h1>
-    <form action="{{ url_for('orders') }}" method="post">
+    <form action="{{ url_for('generate_txt') }}" method="post">
         <table>
             <tr>
                 <th>lp.</th>
@@ -31,9 +31,11 @@
             {% endfor %}
         </table>
         <br>
-        <input type="submit" value="Przejdź do zamówienia">
+        <input type="submit" value="Generuj ofertę">
     </form>
     <br>
-    <a href="{{ url_for('index') }}">Powrót do listy blach</a>
+    <form action="{{ url_for('index') }}" method="get">
+        <button type="submit">Powrót do listy blach</button>
+    </form>
 </body>
 </html>
