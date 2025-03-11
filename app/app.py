@@ -25,14 +25,11 @@ app.secret_key = 'your_secret_key'
 
 db = SQLAlchemy(app)
 
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
 def allowed_image_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_IMAGE_EXTENSIONS
-
 
 # MODELE
 class MaterialOption(db.Model):
@@ -40,12 +37,10 @@ class MaterialOption(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nazwa = db.Column(db.String(100), unique=True, nullable=False)
 
-
 class ThicknessOption(db.Model):
     __tablename__ = 'thickness_option'
     id = db.Column(db.Integer, primary_key=True)
     wartosc = db.Column(db.String(50), unique=True, nullable=False)
-
 
 class Blacha(db.Model):
     __tablename__ = 'blacha'
@@ -79,7 +74,6 @@ class Blacha(db.Model):
     @property
     def stan_potrzebny(self):
         return sum(item.ilosc for item in self.project_items if not item.fulfilled)
-
 
 class Project(db.Model):
     __tablename__ = 'project'
@@ -144,7 +138,6 @@ def orders():
                 order_items.append({'sheet': sheet, 'qty': qty})
         return render_template('orders.html', order_items=order_items)
 
-
 @app.route('/order_form', methods=['POST'])
 def order_form():
     # Pobierz zaznaczone ID z głównego formularza
@@ -181,7 +174,6 @@ def order_form():
 
     session['order_items'] = [(item['sheet'].id, item['qty']) for item in orders]
     return render_template('order_form.html', order_items=orders)
-
 
 @app.route('/export_order/<int:order_id>', methods=['GET'])
 def export_order(order_id):
@@ -256,7 +248,6 @@ def offer_override():
     # Pobieramy tylko wybrane blachy
     sheets = Blacha.query.filter(Blacha.id.in_(override_ids)).all()
     return render_template('offer_override.html', sheets=sheets)
-
 
 # Route: Generate TXT Offer based on override quantities entered by user.
 @app.route('/generate_txt', methods=['POST'])
@@ -357,7 +348,6 @@ def confirm_order():
     flash("Zamówienie potwierdzone, stany zaktualizowane!")
     return redirect(url_for('orders_list'))
 
-
 @app.route('/orders_list')
 def orders_list():
     orders = Order.query.order_by(Order.order_date.desc()).all()
@@ -373,7 +363,6 @@ def order_details(order_id):
 def index():
     blachy = Blacha.query.all()
     return render_template('index.html', blachy=blachy)
-
 
 @app.route('/dodaj', methods=['GET', 'POST'])
 def dodaj():
@@ -394,13 +383,11 @@ def dodaj():
     thicknesses = ThicknessOption.query.all()
     return render_template('dodaj.html', materials=materials, thicknesses=thicknesses)
 
-
 @app.route('/materialy')
 def materialy():
     materials = MaterialOption.query.all()
     thicknesses = ThicknessOption.query.all()
     return render_template('materialy.html', materials=materials, thicknesses=thicknesses)
-
 
 @app.route('/materialy/dodaj_material', methods=['GET', 'POST'])
 def dodaj_material():
@@ -416,7 +403,6 @@ def dodaj_material():
         return redirect(url_for('materialy'))
     return render_template('dodaj_material.html')
 
-
 @app.route('/materialy/dodaj_thickness', methods=['GET', 'POST'])
 def dodaj_thickness():
     if request.method == 'POST':
@@ -430,7 +416,6 @@ def dodaj_thickness():
             flash("Błąd przy dodawaniu grubości: " + str(e))
         return redirect(url_for('materialy'))
     return render_template('dodaj_thickness.html')
-
 
 @app.route('/edytuj/<int:blacha_id>', methods=['GET', 'POST'])
 def edytuj_blacha(blacha_id):
@@ -462,7 +447,6 @@ def dodaj_projekt():
         db.session.commit()
         return redirect(url_for('projekty'))
     return render_template('dodaj_projekt.html')
-
 
 @app.route('/projekty/<int:projekt_id>', methods=['GET', 'POST'])
 def projekt_szczegoly(projekt_id):
@@ -507,7 +491,6 @@ def delete_project_item(item_id):
     flash("Wpis projektu został usunięty.")
     return redirect(url_for('projekt_szczegoly', projekt_id=projekt_id))
 
-
 @app.route('/project/archive/<int:project_id>', methods=['POST'])
 def archive_project(project_id):
     project = Project.query.get_or_404(project_id)
@@ -519,7 +502,6 @@ def archive_project(project_id):
     flash("Projekt zarchiwizowany, zapotrzebowanie usunięte.")
     return redirect(url_for('projekty'))
 
-
 @app.route('/usun/<int:blacha_id>', methods=['POST'])
 def usun_blacha(blacha_id):
     blacha = Blacha.query.get_or_404(blacha_id)
@@ -527,7 +509,6 @@ def usun_blacha(blacha_id):
     db.session.commit()
     flash("Blacha została usunięta")
     return redirect(url_for('index'))
-
 
 @app.route('/upload/<int:blacha_id>', methods=['GET', 'POST'])
 def upload_file(blacha_id):
@@ -571,49 +552,48 @@ def uploaded_file(filename):
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     return send_file(file_path, mimetype='application/pdf', as_attachment=False)
 
-
 if __name__ == '__main__':
     with app.app_context():
         # Create the database if it doesn't exist
         db.create_all()
 
-        # Add material options if they don't exist
-        if not MaterialOption.query.filter_by(nazwa="Stal").first():
-            stal = MaterialOption(nazwa="Stal")
-            db.session.add(stal)
-        if not MaterialOption.query.filter_by(nazwa="Aluminium").first():
-            aluminium = MaterialOption(nazwa="Aluminium")
-            db.session.add(aluminium)
-        db.session.commit()
+        # # Add material options if they don't exist
+        # if not MaterialOption.query.filter_by(nazwa="Stal").first():
+        #     stal = MaterialOption(nazwa="Stal")
+        #     db.session.add(stal)
+        # if not MaterialOption.query.filter_by(nazwa="Aluminium").first():
+        #     aluminium = MaterialOption(nazwa="Aluminium")
+        #     db.session.add(aluminium)
+        # db.session.commit()
 
-        # Add thickness options if they don't exist
-        if not ThicknessOption.query.filter_by(wartosc="3mm").first():
-            t3mm = ThicknessOption(wartosc="3mm")
-            db.session.add(t3mm)
-        if not ThicknessOption.query.filter_by(wartosc="2mm").first():
-            t2mm = ThicknessOption(wartosc="2mm")
-            db.session.add(t2mm)
-        if not ThicknessOption.query.filter_by(wartosc="5mm").first():
-            t5mm = ThicknessOption(wartosc="5mm")
-            db.session.add(t5mm)
-        db.session.commit()
+        # # Add thickness options if they don't exist
+        # if not ThicknessOption.query.filter_by(wartosc="3mm").first():
+        #     t3mm = ThicknessOption(wartosc="3mm")
+        #     db.session.add(t3mm)
+        # if not ThicknessOption.query.filter_by(wartosc="2mm").first():
+        #     t2mm = ThicknessOption(wartosc="2mm")
+        #     db.session.add(t2mm)
+        # if not ThicknessOption.query.filter_by(wartosc="5mm").first():
+        #     t5mm = ThicknessOption(wartosc="5mm")
+        #     db.session.add(t5mm)
+        # db.session.commit()
 
-        # Seed example sheets only if none exist
-        if Blacha.query.count() == 0:
-            stal = MaterialOption.query.filter_by(nazwa="Stal").first()
-            aluminium = MaterialOption.query.filter_by(nazwa="Aluminium").first()
-            t3mm = ThicknessOption.query.filter_by(wartosc="3mm").first()
-            t2mm = ThicknessOption.query.filter_by(wartosc="2mm").first()
-            t5mm = ThicknessOption.query.filter_by(wartosc="5mm").first()
-
-            przykładowe_blachy = [
-                Blacha(nazwa="Blacha A", nazwa_prosta="kątownik", kod="A001", stan_obecny=10,
-                       material_id=stal.id, thickness_id=t3mm.id, rodzaj_obrobki="CNC"),
-                Blacha(nazwa="Blacha B", nazwa_prosta="płyta", kod="B001", stan_obecny=20,
-                       material_id=aluminium.id, thickness_id=t2mm.id, rodzaj_obrobki="Palenie"),
-                Blacha(nazwa="Blacha C", nazwa_prosta="blacha robocza", kod="C001", stan_obecny=5,
-                       material_id=stal.id, thickness_id=t5mm.id, rodzaj_obrobki="Gięcie + Palenie"),
-            ]
-            db.session.add_all(przykładowe_blachy)
-            db.session.commit()
+        # # Seed example sheets only if none exist
+        # if Blacha.query.count() == 0:
+        #     stal = MaterialOption.query.filter_by(nazwa="Stal").first()
+        #     aluminium = MaterialOption.query.filter_by(nazwa="Aluminium").first()
+        #     t3mm = ThicknessOption.query.filter_by(wartosc="3mm").first()
+        #     t2mm = ThicknessOption.query.filter_by(wartosc="2mm").first()
+        #     t5mm = ThicknessOption.query.filter_by(wartosc="5mm").first()
+        #
+        #     przykładowe_blachy = [
+        #         Blacha(nazwa="Blacha A", nazwa_prosta="kątownik", kod="A001", stan_obecny=10,
+        #                material_id=stal.id, thickness_id=t3mm.id, rodzaj_obrobki="CNC"),
+        #         Blacha(nazwa="Blacha B", nazwa_prosta="płyta", kod="B001", stan_obecny=20,
+        #                material_id=aluminium.id, thickness_id=t2mm.id, rodzaj_obrobki="Palenie"),
+        #         Blacha(nazwa="Blacha C", nazwa_prosta="blacha robocza", kod="C001", stan_obecny=5,
+        #                material_id=stal.id, thickness_id=t5mm.id, rodzaj_obrobki="Gięcie + Palenie"),
+        #     ]
+        #     db.session.add_all(przykładowe_blachy)
+        #     db.session.commit()
     app.run(debug=True, host='0.0.0.0')
